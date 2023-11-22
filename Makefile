@@ -3,7 +3,7 @@ include .env
 # Сборка исполняемого файла сервера
 build:
 	if [ -f "${BINARY}" ]; then \
-		rm {BINARY}; \
+		rm ${BINARY}; \
 		echo "Deleted ${BINARY}"; \
 	fi
 	@echo "Building binary..."
