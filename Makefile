@@ -33,3 +33,13 @@ container_stop:
 	else \
 		echo "no containers running"; \
 	fi
+
+help:
+	@echo "build - building binary. Deletes if existed"
+	@echo "run - building binary and running it"
+	@echo "container_up - running database container"
+	@echo "container_start - starting database container"
+	@echo "container_stop - stopping database container if running"
+	@echo "create_db - creating database"
+
+list: help

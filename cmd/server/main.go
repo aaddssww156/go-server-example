@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
+	"server-example/db"
+	"server-example/tools"
 )
 
 type Config struct {
@@ -14,12 +15,6 @@ type Config struct {
 
 type Application struct {
 	Config Config
-}
-
-func init() {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
 }
 
 func (a *Application) Serve() error {
@@ -34,11 +29,27 @@ func (a *Application) Serve() error {
 }
 
 func main() {
+	if err := tools.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
+
 	cfg := Config{
 		Port: os.Getenv("PORT"),
 	}
 
-	// TODO: подключение к базе данных
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable timezone=UTC connect_timeout=5",
+		os.Getenv("HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("DB_NAME"))
+
+	db, err := db.Connect(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.DB.Close()
 
 	app := Application{
 		Config: cfg,

@@ -4,6 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+
+	_ "github.com/jackc/pgconn"
+	_ "github.com/jackc/pgx/stdlib"
+	_ "github.com/jackc/pgx/v5"
+	_ "github.com/lib/pq"
 )
 
 type DB struct {
@@ -19,7 +24,7 @@ const maxDbLifetime = 5 * time.Minute
 func Connect(dsn string) (*DB, error) {
 	d, err := sql.Open("pgx", dsn)
 	if err != nil {
-		return nil, fmt.Errorf("error connecting to a database: %e", err)
+		return nil, fmt.Errorf("error connecting to a database: %s", err.Error())
 	}
 
 	d.SetMaxOpenConns(maxOpenDbConn)
@@ -27,7 +32,7 @@ func Connect(dsn string) (*DB, error) {
 	d.SetConnMaxLifetime(maxDbLifetime)
 
 	if err := d.Ping(); err != nil {
-		return nil, fmt.Errorf("error connecting to a database: %e", err)
+		return nil, fmt.Errorf("error connecting to a database: %s", err.Error())
 	}
 
 	dbConn.DB = d
