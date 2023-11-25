@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"server-example/db"
+	"server-example/router"
+	"server-example/services"
 	"server-example/tools"
 )
 
@@ -15,6 +17,7 @@ type Config struct {
 
 type Application struct {
 	Config Config
+	Models services.Models
 }
 
 func (a *Application) Serve() error {
@@ -22,8 +25,8 @@ func (a *Application) Serve() error {
 	log.Printf("Server is working on %s port!\n", port)
 
 	serv := &http.Server{
-		Addr: ":" + port,
-		// Handler: router,
+		Addr:    ":" + port,
+		Handler: router.Routes(),
 	}
 	return serv.ListenAndServe()
 }
@@ -53,6 +56,7 @@ func main() {
 
 	app := Application{
 		Config: cfg,
+		Models: services.New(db.DB),
 	}
 
 	if err := app.Serve(); err != nil {

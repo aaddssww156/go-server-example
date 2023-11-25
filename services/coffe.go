@@ -58,7 +58,7 @@ func (c *Coffe) CreateCoffee(coffee Coffe) (*Coffe, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `INSERT INTO coffees (name, image, region, roast, price, grind_unit, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) return *`
+	query := `INSERT INTO coffees (name, image, region, roast, price, grind_unit, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *`
 
 	_, err := db.ExecContext(ctx, query, coffee.Name, coffee.Image, coffee.Region, coffee.Roast, coffee.Price, coffee.GrindUnit, time.Now(), time.Now())
 	if err != nil {
